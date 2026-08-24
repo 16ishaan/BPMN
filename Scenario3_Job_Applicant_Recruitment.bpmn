@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_Process_Recruitment"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_Recruitment" name="Job Applicant Recruitment Process" isExecutable="false">
+    <bpmn:startEvent id="Start_1" name="Candidate Submits Job Application">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_Screen" name="Screen Application Against Eligibility Criteria">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_Eligibility" name="Meets Eligibility Criteria?">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_RejectEligibility" name="Send Rejection Notification">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_RejectEligibility" name="Process Ends (Rejected - Not Eligible)">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_ScheduleTech" name="Schedule Technical Interview">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_EvaluateTech" name="Evaluate Technical Interview Performance">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_TechPass" name="Passes Technical Interview?">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_RejectTech" name="Send Rejection Notification">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_RejectTech" name="Process Ends (Rejected - Technical Round)">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_ScheduleHR" name="Schedule HR / Managerial Round">
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ConductHR" name="Conduct HR / Managerial Round">
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_HRSelect" name="Selected in HR Round?">
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_RejectHR" name="Send Rejection Notification">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_RejectHR" name="Process Ends (Rejected - HR Round)">
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_Offer" name="Generate &amp; Send Offer Letter">
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+      <bpmn:outgoing>Flow_16</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_Success" name="Process Ends (Offer Letter Sent)">
+      <bpmn:incoming>Flow_16</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_1" targetRef="Task_Screen" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_Screen" targetRef="GW_Eligibility" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="GW_Eligibility" targetRef="Task_RejectEligibility" name="No" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_RejectEligibility" targetRef="End_RejectEligibility" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="GW_Eligibility" targetRef="Task_ScheduleTech" name="Yes" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_ScheduleTech" targetRef="Task_EvaluateTech" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Task_EvaluateTech" targetRef="GW_TechPass" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="GW_TechPass" targetRef="Task_RejectTech" name="Fail" />
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Task_RejectTech" targetRef="End_RejectTech" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="GW_TechPass" targetRef="Task_ScheduleHR" name="Pass" />
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Task_ScheduleHR" targetRef="Task_ConductHR" />
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Task_ConductHR" targetRef="GW_HRSelect" />
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="GW_HRSelect" targetRef="Task_RejectHR" name="Rejected" />
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="Task_RejectHR" targetRef="End_RejectHR" />
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="GW_HRSelect" targetRef="Task_Offer" name="Selected" />
+    <bpmn:sequenceFlow id="Flow_16" sourceRef="Task_Offer" targetRef="End_Success" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Recruitment">
+      <bpmndi:BPMNShape id="Start_1_di" bpmnElement="Start_1">
+        <dc:Bounds x="60" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Screen_di" bpmnElement="Task_Screen">
+        <dc:Bounds x="150" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_Eligibility_di" bpmnElement="GW_Eligibility">
+        <dc:Bounds x="310" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RejectEligibility_di" bpmnElement="Task_RejectEligibility">
+        <dc:Bounds x="410" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_RejectEligibility_di" bpmnElement="End_RejectEligibility">
+        <dc:Bounds x="570" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ScheduleTech_di" bpmnElement="Task_ScheduleTech">
+        <dc:Bounds x="420" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_EvaluateTech_di" bpmnElement="Task_EvaluateTech">
+        <dc:Bounds x="580" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_TechPass_di" bpmnElement="GW_TechPass">
+        <dc:Bounds x="740" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RejectTech_di" bpmnElement="Task_RejectTech">
+        <dc:Bounds x="840" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_RejectTech_di" bpmnElement="End_RejectTech">
+        <dc:Bounds x="1000" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ScheduleHR_di" bpmnElement="Task_ScheduleHR">
+        <dc:Bounds x="850" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ConductHR_di" bpmnElement="Task_ConductHR">
+        <dc:Bounds x="1010" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_HRSelect_di" bpmnElement="GW_HRSelect">
+        <dc:Bounds x="1170" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RejectHR_di" bpmnElement="Task_RejectHR">
+        <dc:Bounds x="1270" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_RejectHR_di" bpmnElement="End_RejectHR">
+        <dc:Bounds x="1430" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Offer_di" bpmnElement="Task_Offer">
+        <dc:Bounds x="1280" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Success_di" bpmnElement="End_Success">
+        <dc:Bounds x="1440" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="78" y="218" />
+        <di:waypoint x="78" y="200" />
+        <di:waypoint x="150" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="200" y="240" />
+        <di:waypoint x="200" y="200" />
+        <di:waypoint x="310" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="335" y="225" />
+        <di:waypoint x="335" y="370" />
+        <di:waypoint x="410" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="305" y="355" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="460" y="410" />
+        <di:waypoint x="460" y="370" />
+        <di:waypoint x="570" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="335" y="225" />
+        <di:waypoint x="335" y="200" />
+        <di:waypoint x="420" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="305" y="185" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="520" y="200" />
+        <di:waypoint x="580" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="630" y="240" />
+        <di:waypoint x="630" y="200" />
+        <di:waypoint x="740" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="765" y="225" />
+        <di:waypoint x="765" y="370" />
+        <di:waypoint x="840" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="735" y="355" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="890" y="410" />
+        <di:waypoint x="890" y="370" />
+        <di:waypoint x="1000" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="765" y="225" />
+        <di:waypoint x="765" y="200" />
+        <di:waypoint x="850" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="735" y="185" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="950" y="200" />
+        <di:waypoint x="1010" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="1060" y="240" />
+        <di:waypoint x="1060" y="200" />
+        <di:waypoint x="1170" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
+        <di:waypoint x="1195" y="225" />
+        <di:waypoint x="1195" y="370" />
+        <di:waypoint x="1270" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1165" y="355" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
+        <di:waypoint x="1320" y="410" />
+        <di:waypoint x="1320" y="370" />
+        <di:waypoint x="1430" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15_di" bpmnElement="Flow_15">
+        <di:waypoint x="1195" y="225" />
+        <di:waypoint x="1195" y="200" />
+        <di:waypoint x="1280" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1165" y="185" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16_di" bpmnElement="Flow_16">
+        <di:waypoint x="1330" y="240" />
+        <di:waypoint x="1330" y="200" />
+        <di:waypoint x="1440" y="200" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
