@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_SlotDecision" name="slot_decision" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="slot_decision" name="slot_decision">
+    <decisionTable id="DecisionTable_1" hitPolicy="UNIQUE">
+      <input id="Input_dept" label="department">
+        <inputExpression id="InputExpr_dept" typeRef="string"><text>department</text></inputExpression>
+      </input>
+      <input id="Input_count" label="bookedCount">
+        <inputExpression id="InputExpr_count" typeRef="number"><text>bookedCount</text></inputExpression>
+      </input>
+      <output id="Output_status" label="slotStatus" name="slotStatus" typeRef="string" />
+      <output id="Output_action" label="suggestedAction" name="suggestedAction" typeRef="string" />
+      <rule id="Rule_CardioFull">
+        <inputEntry id="R1_I1"><text>"Cardiology"</text></inputEntry>
+        <inputEntry id="R1_I2"><text>&gt;= 10</text></inputEntry>
+        <outputEntry id="R1_O1"><text>"FULL"</text></outputEntry>
+        <outputEntry id="R1_O2"><text>"Offer next available slot"</text></outputEntry>
+      </rule>
+      <rule id="Rule_CardioAvail">
+        <inputEntry id="R2_I1"><text>"Cardiology"</text></inputEntry>
+        <inputEntry id="R2_I2"><text>&lt; 10</text></inputEntry>
+        <outputEntry id="R2_O1"><text>"AVAILABLE"</text></outputEntry>
+        <outputEntry id="R2_O2"><text>"Book slot"</text></outputEntry>
+      </rule>
+      <rule id="Rule_NeuroFull">
+        <inputEntry id="R3_I1"><text>"Neurology"</text></inputEntry>
+        <inputEntry id="R3_I2"><text>&gt;= 8</text></inputEntry>
+        <outputEntry id="R3_O1"><text>"FULL"</text></outputEntry>
+        <outputEntry id="R3_O2"><text>"Offer next available slot"</text></outputEntry>
+      </rule>
+      <rule id="Rule_NeuroAvail">
+        <inputEntry id="R4_I1"><text>"Neurology"</text></inputEntry>
+        <inputEntry id="R4_I2"><text>&lt; 8</text></inputEntry>
+        <outputEntry id="R4_O1"><text>"AVAILABLE"</text></outputEntry>
+        <outputEntry id="R4_O2"><text>"Book slot"</text></outputEntry>
+      </rule>
+      <rule id="Rule_OtherFull">
+        <inputEntry id="R5_I1"><text>not("Cardiology", "Neurology")</text></inputEntry>
+        <inputEntry id="R5_I2"><text>&gt;= 15</text></inputEntry>
+        <outputEntry id="R5_O1"><text>"FULL"</text></outputEntry>
+        <outputEntry id="R5_O2"><text>"Offer next available slot"</text></outputEntry>
+      </rule>
+      <rule id="Rule_OtherAvail">
+        <inputEntry id="R6_I1"><text>not("Cardiology", "Neurology")</text></inputEntry>
+        <inputEntry id="R6_I2"><text>&lt; 15</text></inputEntry>
+        <outputEntry id="R6_O1"><text>"AVAILABLE"</text></outputEntry>
+        <outputEntry id="R6_O2"><text>"Book slot"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1">
+      <dmndi:DMNShape id="DMNShape_slot_decision" dmnElementRef="slot_decision">
+        <dc:Bounds height="80" width="180" x="150" y="80" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
